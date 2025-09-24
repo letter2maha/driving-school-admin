@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, checkAdminStatus } from '@/lib/supabase'
+import { signInAdmin } from '@/lib/auth'
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('admin@drivedash.co.uk')
@@ -17,34 +17,22 @@ export default function AdminLoginPage() {
     setError('')
 
     try {
-      // Sign in with email and password
-      const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-
+      // Use mock authentication system
+      const { data, error: authError } = await signInAdmin(email, password)
+      
       if (authError) {
-        setError(authError.message)
+        setError(authError.message || 'Login failed')
         setLoading(false)
         return
       }
 
-      if (!user) {
-        setError('Login failed. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      // Check if user is admin using service role (bypasses RLS)
-      const isAdminUser = await checkAdminStatus(user.id)
-
-      if (isAdminUser) {
+      if (data.user) {
         // Redirect to admin dashboard
         router.push('/admin/dashboard')
       } else {
-        setError('Access denied. Admin privileges required.')
-        // Sign out the user since they're not admin
-        await supabase.auth.signOut()
+        setError('Login failed. Please try again.')
+        setLoading(false)
+        return
       }
     } catch (err) {
       console.error('Login error:', err)
