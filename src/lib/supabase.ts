@@ -4,10 +4,14 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://parriuibqsfakwlmbdac.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhcnJpdWlicXNmYWt3bG1iZGFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyMTIxMjksImV4cCI6MjA2ODc4ODEyOX0.PHfq49BUm2SFisBzlJl5mt33PODz22-7NoJ_JMXERM4'
 
+console.log('=== SUPABASE CONFIG DEBUG ===')
 console.log('Supabase URL:', supabaseUrl)
 console.log('Supabase Key:', supabaseAnonKey ? 'Present' : 'Missing')
-console.log('Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing (using placeholder)')
-console.log('All env vars:', Object.keys(process.env).filter(key => key.includes('SUPABASE')))
+console.log('Service Role Key (server):', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing')
+console.log('Service Role Key (public):', process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ? 'Present' : 'Missing')
+console.log('All SUPABASE env vars:', Object.keys(process.env).filter(key => key.includes('SUPABASE')))
+console.log('NODE_ENV:', process.env.NODE_ENV)
+console.log('================================')
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
