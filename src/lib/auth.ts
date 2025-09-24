@@ -9,7 +9,8 @@ export interface AuthState {
 // Simple admin authentication - in production, you'd want more robust auth
 export const adminEmails = [
   'admin@drivingschool.com',
-  'superadmin@drivingschool.com'
+  'superadmin@drivingschool.com',
+  'admin@drivedash.co.uk'  // Add your actual admin email
 ]
 
 export async function signInAdmin(email: string, password: string) {
@@ -22,7 +23,7 @@ export async function signInAdmin(email: string, password: string) {
 
     // Mock admin user - replace with actual authentication
     const adminUser: AdminUser = {
-      id: 'admin-1',
+      id: email === 'admin@drivedash.co.uk' ? '7e538aad-0075-47a4-8c81-1f1354da4563' : 'admin-1',
       email,
       name: email.split('@')[0],
       role: email === 'superadmin@drivingschool.com' ? 'super_admin' : 'admin',
