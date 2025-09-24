@@ -22,7 +22,7 @@ export default function LoginForm() {
       const { data, error } = await signInAdmin(email, password)
       
       if (error) {
-        setError(error.message)
+        setError((error as any)?.message || 'An error occurred')
       } else if (data.user) {
         router.push('/admin/dashboard')
       }

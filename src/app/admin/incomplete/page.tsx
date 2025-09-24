@@ -91,7 +91,7 @@ export default function IncompleteRegistrationsPage() {
         }
 
         // Calculate completion status
-        const calculateCompletionStatus = (verification, hasInstructorProfile) => {
+        const calculateCompletionStatus = (verification: any, hasInstructorProfile: boolean) => {
           if (verification?.profile_completed === true && verification?.profile_approved !== null) {
             return 'completed'
           }
@@ -123,7 +123,7 @@ export default function IncompleteRegistrationsPage() {
         ['phone_incomplete', 'kyc_incomplete', 'profile_incomplete'].includes(app.completion_status)
       )
 
-      setApplications(incompleteRegistrations)
+      setApplications(incompleteRegistrations as ApplicationWithDetails[])
     } catch (error) {
       console.error('Error fetching incomplete registrations:', error)
     } finally {
@@ -145,7 +145,7 @@ export default function IncompleteRegistrationsPage() {
 
     // Filter by status
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(app => app.completion_status === statusFilter)
+      filtered = filtered.filter(app => (app as any).completion_status === statusFilter)
     }
 
     setFilteredApplications(filtered)
@@ -182,7 +182,7 @@ export default function IncompleteRegistrationsPage() {
   }
 
   const getIncompleteReason = (app: ApplicationWithDetails) => {
-    const status = app.completion_status
+    const status = (app as any).completion_status
     const verification = app.verification_status
 
     switch (status) {
@@ -302,7 +302,7 @@ export default function IncompleteRegistrationsPage() {
                           <h4 className="text-sm font-medium text-gray-900 truncate">
                             {application.profile.full_name}
                           </h4>
-                          {getStatusBadge(application.completion_status)}
+                          {getStatusBadge((application as any).completion_status)}
                         </div>
                         <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                           <span>Email: {application.profile.email}</span>
@@ -310,7 +310,7 @@ export default function IncompleteRegistrationsPage() {
                           <span>Registered: {format(new Date(application.profile.created_at), 'MMM dd, yyyy')}</span>
                         </div>
                         <div className="mt-2 flex items-center space-x-1 text-sm text-gray-600">
-                          {getStatusIcon(application.completion_status)}
+                          {getStatusIcon((application as any).completion_status)}
                           <span>{getIncompleteReason(application)}</span>
                         </div>
                       </div>

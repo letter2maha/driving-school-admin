@@ -686,9 +686,8 @@ export default function ApplicationDetailPage() {
                 Profile Image
               </h3>
               {(() => {
-                // Check profile and instructor profile for image (students don't have separate image URLs)
-                const profileImageUrl = application.profile.profile_image_url || 
-                                      application.instructor_profile?.profile_image_url;
+                // Check profile for image (instructor profiles don't have separate image URLs)
+                const profileImageUrl = application.profile.profile_image_url;
                 
                 if (profileImageUrl) {
                   return (
@@ -698,7 +697,10 @@ export default function ApplicationDetailPage() {
                       className="w-full h-48 object-cover rounded-lg"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling.style.display = 'flex';
+                        const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (nextElement) {
+                          nextElement.style.display = 'flex';
+                        }
                       }}
                     />
                   );
@@ -724,9 +726,8 @@ export default function ApplicationDetailPage() {
                   Car Image
                 </h3>
                 {(() => {
-                  // Check both profile and instructor profile for car image
-                  const carImageUrl = application.profile.car_image_url || 
-                                   application.instructor_profile?.car_image_url;
+                  // Check profile for car image (instructor profiles don't have separate car image URLs)
+                  const carImageUrl = application.profile.car_image_url;
                   
                   if (carImageUrl) {
                     return (
@@ -736,7 +737,10 @@ export default function ApplicationDetailPage() {
                         className="w-full h-48 object-cover rounded-lg"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
-                          e.currentTarget.nextElementSibling.style.display = 'flex';
+                          const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.style.display = 'flex';
+                          }
                         }}
                       />
                     );
@@ -768,7 +772,7 @@ export default function ApplicationDetailPage() {
                     <div className="mt-2">
                       <div 
                         className={`relative w-full h-32 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors group ${kycLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        onClick={() => !kycLoading && openKycDocument('Photo ID', application.verification_status.kyc_photo_id_path)}
+                        onClick={() => !kycLoading && application.verification_status.kyc_photo_id_path && openKycDocument('Photo ID', application.verification_status.kyc_photo_id_path)}
                       >
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                           {kycLoading ? (
@@ -803,7 +807,7 @@ export default function ApplicationDetailPage() {
                     <div className="mt-2">
                       <div 
                         className={`relative w-full h-32 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors group ${kycLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        onClick={() => !kycLoading && openKycDocument('Instructor License', application.verification_status.kyc_instructor_id_path)}
+                        onClick={() => !kycLoading && application.verification_status.kyc_instructor_id_path && openKycDocument('Instructor License', application.verification_status.kyc_instructor_id_path)}
                       >
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                           {kycLoading ? (
@@ -833,42 +837,6 @@ export default function ApplicationDetailPage() {
                   )}
                 </div>
                 
-                {/* Provisional ID - for students */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Provisional License</label>
-                  {application.verification_status.kyc_provisional_id_path ? (
-                    <div className="mt-2">
-                      <div 
-                        className={`relative w-full h-32 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors group ${kycLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        onClick={() => !kycLoading && openKycDocument('Provisional License', application.verification_status.kyc_provisional_id_path)}
-                      >
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          {kycLoading ? (
-                            <>
-                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-                              <p className="text-sm text-gray-500 mt-2">Loading...</p>
-                            </>
-                          ) : (
-                            <>
-                              <DocumentIcon className="h-8 w-8 text-gray-400 group-hover:text-blue-500" />
-                              <p className="text-sm text-gray-500 group-hover:text-blue-600 mt-1">Click to view Provisional License</p>
-                            </>
-                          )}
-                        </div>
-                        {!kycLoading && (
-                          <div className="absolute top-2 right-2">
-                            <EyeIcon className="h-5 w-5 text-gray-400 group-hover:text-blue-500" />
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-400 mt-1">
-                        File: {application.verification_status.kyc_provisional_id_path.split('/').pop()}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="mt-1 text-sm text-gray-500">Not provided</p>
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -938,7 +906,10 @@ export default function ApplicationDetailPage() {
                     className="max-w-full max-h-[70vh] mx-auto rounded-lg shadow-lg"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none'
-                      e.currentTarget.nextSibling.style.display = 'block'
+                      const nextElement = e.currentTarget.nextSibling as HTMLElement;
+                      if (nextElement) {
+                        nextElement.style.display = 'block';
+                      }
                     }}
                   />
                   <div className="hidden mt-8 p-8 bg-gray-100 rounded-lg">

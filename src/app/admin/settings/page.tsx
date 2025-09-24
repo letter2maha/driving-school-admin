@@ -49,7 +49,7 @@ export default function SettingsPage() {
                   <input
                     type="text"
                     className="input-field mt-1"
-                    value={user?.name || ''}
+                    value={user?.email || ''}
                     readOnly
                   />
                 </div>
