@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
 import { supabase, checkAdminStatus } from '@/lib/supabase'
+import { getCurrentAdmin, signOutAdmin } from '@/lib/auth'
 
 interface AuthContextType {
   user: User | null
@@ -19,31 +20,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        checkAdminStatusLocal(session.user.id)
-      } else {
-        setIsAdmin(false)
-        setLoading(false)
-      }
-    })
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        checkAdminStatusLocal(session.user.id)
-      } else {
-        setIsAdmin(false)
-        setLoading(false)
-      }
-    })
-
-    return () => subscription.unsubscribe()
+    // Use mock authentication instead of real Supabase auth
+    const adminUser = getCurrentAdmin()
+    if (adminUser) {
+      // Create a minimal user object for compatibility
+      const user = {
+        id: adminUser.id,
+        email: adminUser.email,
+        aud: 'authenticated',
+        role: 'authenticated',
+        created_at: adminUser.created_at,
+        updated_at: adminUser.created_at,
+        app_metadata: {},
+        user_metadata: {},
+        identities: [],
+        confirmed_at: adminUser.created_at,
+        last_sign_in_at: adminUser.created_at,
+        recovery_sent_at: null,
+        email_confirmed_at: adminUser.created_at,
+        phone_confirmed_at: null,
+        new_email: null,
+        invited_at: null,
+        action_link: null,
+        email_change_sent_at: null,
+        new_phone: null,
+        phone_change_sent_at: null,
+        phone_change: null,
+        phone_change_token: null,
+        email_change: null,
+        email_change_token: null,
+        factors: [],
+        banned_until: null,
+        is_anonymous: false,
+        is_sso_user: false
+      } as User
+      
+      setUser(user)
+      setIsAdmin(true)
+    } else {
+      setUser(null)
+      setIsAdmin(false)
+    }
+    setLoading(false)
   }, [])
 
   const checkAdminStatusLocal = async (userId: string) => {
@@ -59,7 +77,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    await signOutAdmin()
+    setUser(null)
     setIsAdmin(false)
   }
 
