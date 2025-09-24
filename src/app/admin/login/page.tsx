@@ -21,7 +21,7 @@ export default function AdminLoginPage() {
       const { data, error: authError } = await signInAdmin(email, password)
       
       if (authError) {
-        setError(authError.message || 'Login failed')
+        setError((authError as any)?.message || 'Login failed')
         setLoading(false)
         return
       }
