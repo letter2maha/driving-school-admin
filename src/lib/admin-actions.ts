@@ -212,7 +212,7 @@ export async function getRejectionDetails(userId: string): Promise<RejectionDeta
       rejectedAt: data.profile_approved_at,
       rejectedBy: data.profile_approved_by,
       rejectionReason: data.profile_rejection_reason,
-      user: data.profiles
+      user: data.profiles?.[0] || { full_name: '', email: '' }
     }
 
   } catch (error) {
