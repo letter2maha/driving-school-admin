@@ -8,29 +8,36 @@ export async function GET(
   try {
     const instructorId = params.id
 
-    // Get instructor details (only approved instructors)
-    // Join with verification_status to check approval status
-    const { data: instructorData, error: instructorError } = await supabaseAdmin
-      .from('profiles')
-      .select(`
-        *,
-        verification_status!inner (
-          profile_approved
-        )
-      `)
+    // First check if this instructor is approved
+    const { data: verificationCheck, error: verificationError } = await supabaseAdmin
+      .from('verification_status')
+      .select('profile_approved')
       .eq('id', instructorId)
-      .eq('role', 'instructor')
-      .eq('verification_status.profile_approved', true) // Only approved instructors
+      .eq('profile_approved', true)
       .single()
 
-    if (instructorError || !instructorData) {
+    if (verificationError || !verificationCheck) {
       return NextResponse.json(
         { error: 'Approved instructor not found' },
         { status: 404 }
       )
     }
 
-    // Extract just the instructor data (remove nested verification_status)
+    // Get instructor details
+    const { data: instructorData, error: instructorError } = await supabaseAdmin
+      .from('profiles')
+      .select('*')
+      .eq('id', instructorId)
+      .eq('role', 'instructor')
+      .single()
+
+    if (instructorError || !instructorData) {
+      return NextResponse.json(
+        { error: 'Instructor not found' },
+        { status: 404 }
+      )
+    }
+
     const instructor = {
       id: instructorData.id,
       full_name: instructorData.full_name,
