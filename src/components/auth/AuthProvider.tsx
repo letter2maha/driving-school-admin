@@ -21,7 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Use mock authentication instead of real Supabase auth
+    console.log('AuthProvider: Checking for admin user in localStorage')
     const adminUser = getCurrentAdmin()
+    console.log('AuthProvider: Admin user found:', !!adminUser)
     if (adminUser) {
       // Create a minimal user object for compatibility
       const user = {

@@ -32,8 +32,9 @@ export default function AdminLoginPage() {
       }
 
       if (data.user) {
-        // Redirect to admin dashboard
-        router.push('/admin/dashboard')
+        console.log('Login successful, redirecting to dashboard...')
+        // Force a full page redirect to ensure clean state
+        window.location.href = '/admin/dashboard'
       } else {
         setError('Login failed. Please try again.')
         setLoading(false)

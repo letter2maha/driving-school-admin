@@ -17,11 +17,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
+    console.log('AdminLayout: Auth state check', { user: !!user, loading, isAdmin })
     if (!loading) {
       if (!user) {
+        console.log('AdminLayout: No user, redirecting to login')
         router.push('/admin/login')
       } else if (!isAdmin) {
+        console.log('AdminLayout: User not admin, redirecting to login')
         router.push('/admin/login')
+      } else {
+        console.log('AdminLayout: User authenticated and is admin')
       }
     }
   }, [user, loading, isAdmin, router])
