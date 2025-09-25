@@ -12,7 +12,6 @@ import {
 import { useEffect, useState } from 'react'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 import { ApplicationWithDetails } from '@/types/database'
-import { getMockApplications, getMockStats, getMockRecentApplications } from '@/lib/mock-data'
 import DataDebugger from '@/components/debug/DataDebugger'
 import ConnectionTest from '@/components/debug/ConnectionTest'
 
@@ -325,15 +324,7 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
-      console.log('Using mock data as fallback...')
-      
-      // Use mock data when Supabase fails
-      const mockApplications = getMockApplications()
-      const mockStats = getMockStats()
-      const mockRecent = getMockRecentApplications()
-      
-      setRecentApplications(mockRecent)
-      setStats(mockStats)
+      // Keep empty state when data fetch fails
     } finally {
       setLoading(false)
     }
