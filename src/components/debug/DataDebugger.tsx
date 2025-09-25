@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import { ApplicationWithDetails } from '@/types/database'
 
 export default function DataDebugger() {
@@ -17,7 +17,7 @@ export default function DataDebugger() {
       console.log('Debug: Fetching data...')
       
       // Fetch profiles first
-      const { data: profilesData, error: profilesError } = await supabase
+      const { data: profilesData, error: profilesError } = await supabaseAdmin
         .from('profiles')
         .select(`
           *,
@@ -35,7 +35,7 @@ export default function DataDebugger() {
       let verificationData = []
       
       if (profileIds.length > 0) {
-        const { data: verificationStatus, error: verificationError } = await supabase
+        const { data: verificationStatus, error: verificationError } = await supabaseAdmin
           .from('verification_status')
           .select('*')
           .in('id', profileIds)

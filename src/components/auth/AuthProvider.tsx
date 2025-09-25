@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
-import { supabase, checkAdminStatus } from '@/lib/supabase'
+import { checkAdminStatus } from '@/lib/supabase'
 import { getCurrentAdmin, signOutAdmin } from '@/lib/auth'
 
 interface AuthContextType {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export default function ConnectionTest() {
   const [result, setResult] = useState<string>('')
@@ -17,7 +17,7 @@ export default function ConnectionTest() {
       console.log('Supabase Key:', 'Present (hardcoded)')
       
       // Test basic connection with a simple query
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('instructor_profiles')
         .select('id, bio, experience_years')
         .limit(3)
@@ -43,7 +43,7 @@ export default function ConnectionTest() {
     
     try {
       // First, let's try to get ALL instructor profiles
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('instructor_profiles')
         .select('*')
         .limit(10)
@@ -66,7 +66,7 @@ export default function ConnectionTest() {
     
     try {
       // Test specifically for instructor profiles
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('profiles')
         .select('*')
         .eq('role', 'instructor')
@@ -90,7 +90,7 @@ export default function ConnectionTest() {
     
     try {
       // Test if verification_status table exists
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('verification_status')
         .select('*')
         .limit(5)

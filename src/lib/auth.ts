@@ -1,4 +1,3 @@
-import { supabase } from './supabase'
 import { AdminUser } from '@/types/database'
 
 export interface AuthState {
@@ -24,10 +23,11 @@ export async function signInAdmin(email: string, password: string) {
       throw new Error('Unauthorized admin email')
     }
 
-    // Simple password validation for demo
-    if (!password || password.length < 3) {
-      console.log('Mock auth: Password too short')
-      throw new Error('Password is required')
+    // Simple password validation for demo - use a specific password
+    const expectedPassword = 'admin123'
+    if (!password || password !== expectedPassword) {
+      console.log('Mock auth: Invalid password')
+      throw new Error('Invalid password')
     }
 
     console.log('Mock auth: Login successful')

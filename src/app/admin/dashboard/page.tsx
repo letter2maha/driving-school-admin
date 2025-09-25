@@ -55,7 +55,7 @@ export default function DashboardPage() {
 
         console.log('Found verification status records:', verificationData?.length || 0)
 
-      // If no verification records exist, get all profiles as fallback
+        // If no verification records exist, get all profiles as fallback
       if (!verificationData || verificationData.length === 0) {
         console.log('No verification records found, using all profiles as fallback...')
         
@@ -317,8 +317,12 @@ export default function DashboardPage() {
         incomplete: incomplete.length
       })
 
-      // Set recent applications (last 5 pending)
-      setRecentApplications(pending.slice(0, 5) as unknown as ApplicationWithDetails[])
+        // Set recent applications (last 5 pending)
+        setRecentApplications(pending.slice(0, 5) as unknown as ApplicationWithDetails[])
+      } catch (innerError) {
+        console.error('Error in inner try block:', innerError)
+        throw innerError
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
       console.log('Using mock data as fallback...')
