@@ -21,6 +21,15 @@ export default function SettingsPage() {
     applicationUpdates: true,
     systemAlerts: true
   })
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  })
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSuccess, setPasswordSuccess] = useState('')
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
 
   const tabs = [
     { id: 'profile', name: 'Profile', icon: UserIcon },
@@ -34,6 +43,96 @@ export default function SettingsPage() {
       ...prev,
       [key]: value
     }))
+  }
+
+  const handlePasswordChange = (field: string, value: string) => {
+    setPasswordForm(prev => ({
+      ...prev,
+      [field]: value
+    }))
+    // Clear errors when user starts typing
+    if (passwordError) setPasswordError('')
+    if (passwordSuccess) setPasswordSuccess('')
+  }
+
+  const handleChangePassword = async () => {
+    setPasswordError('')
+    setPasswordSuccess('')
+
+    // Validation
+    if (!passwordForm.currentPassword) {
+      setPasswordError('Current password is required')
+      return
+    }
+
+    if (!passwordForm.newPassword) {
+      setPasswordError('New password is required')
+      return
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters')
+      return
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError('New passwords do not match')
+      return
+    }
+
+    if (passwordForm.currentPassword === passwordForm.newPassword) {
+      setPasswordError('New password must be different from current password')
+      return
+    }
+
+    setIsChangingPassword(true)
+
+    try {
+      // For mock authentication, we'll simulate a password change
+      // In a real app, this would make an API call to change the password
+      
+      // Verify current password (in mock system, it should be 'admin123')
+      if (passwordForm.currentPassword !== 'admin123') {
+        setPasswordError('Current password is incorrect')
+        return
+      }
+
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // Update the mock authentication to use new password
+      // Note: In a real app, this would be handled by the backend
+      setPasswordSuccess('Password changed successfully! Please note: In the mock system, you\'ll need to update the auth.ts file to use the new password.')
+      
+      // Reset form
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      })
+      
+      // Hide form after success
+      setTimeout(() => {
+        setShowChangePassword(false)
+        setPasswordSuccess('')
+      }, 3000)
+
+    } catch (error) {
+      setPasswordError('Failed to change password. Please try again.')
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
+
+  const cancelPasswordChange = () => {
+    setShowChangePassword(false)
+    setPasswordForm({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    })
+    setPasswordError('')
+    setPasswordSuccess('')
   }
 
   const renderTabContent = () => {
@@ -165,15 +264,120 @@ export default function SettingsPage() {
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Security Settings</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                  <div className="flex items-center">
-                    <KeyIcon className="h-5 w-5 text-gray-400 mr-3" />
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-900">Change Password</h4>
-                      <p className="text-sm text-gray-500">Update your account password</p>
+                <div className="border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center">
+                      <KeyIcon className="h-5 w-5 text-gray-400 mr-3" />
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-900">Change Password</h4>
+                        <p className="text-sm text-gray-500">Update your account password</p>
+                      </div>
                     </div>
+                    <button 
+                      onClick={() => setShowChangePassword(!showChangePassword)}
+                      className="btn-secondary"
+                    >
+                      {showChangePassword ? 'Cancel' : 'Change'}
+                    </button>
                   </div>
-                  <button className="btn-secondary">Change</button>
+
+                  {/* Change Password Form */}
+                  {showChangePassword && (
+                    <div className="border-t border-gray-200 p-4 bg-gray-50">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Current Password
+                          </label>
+                          <input
+                            type="password"
+                            value={passwordForm.currentPassword}
+                            onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
+                            className="input-field"
+                            placeholder="Enter current password"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            New Password
+                          </label>
+                          <input
+                            type="password"
+                            value={passwordForm.newPassword}
+                            onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
+                            className="input-field"
+                            placeholder="Enter new password (min 6 characters)"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Confirm New Password
+                          </label>
+                          <input
+                            type="password"
+                            value={passwordForm.confirmPassword}
+                            onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
+                            className="input-field"
+                            placeholder="Confirm new password"
+                          />
+                        </div>
+
+                        {/* Error Message */}
+                        {passwordError && (
+                          <div className="rounded-md bg-red-50 p-4">
+                            <div className="flex">
+                              <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                              <div className="ml-3">
+                                <h3 className="text-sm font-medium text-red-800">
+                                  {passwordError}
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Success Message */}
+                        {passwordSuccess && (
+                          <div className="rounded-md bg-green-50 p-4">
+                            <div className="flex">
+                              <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                              <div className="ml-3">
+                                <h3 className="text-sm font-medium text-green-800">
+                                  {passwordSuccess}
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex space-x-3">
+                          <button
+                            onClick={handleChangePassword}
+                            disabled={isChangingPassword}
+                            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {isChangingPassword ? 'Changing...' : 'Change Password'}
+                          </button>
+                          <button
+                            onClick={cancelPasswordChange}
+                            className="btn-secondary"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
