@@ -8,7 +8,8 @@ import {
   UserGroupIcon,
   CogIcon,
   ArrowRightOnRectangleIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  AcademicCapIcon
 } from '@heroicons/react/24/outline'
 import { signOutAdmin } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
   { name: 'Applications', href: '/admin/applications', icon: DocumentTextIcon },
   { name: 'Incomplete', href: '/admin/incomplete', icon: ExclamationTriangleIcon },
+  { name: 'Instructors', href: '/admin/instructors', icon: AcademicCapIcon },
   { name: 'Users', href: '/admin/users', icon: UserGroupIcon },
   { name: 'Settings', href: '/admin/settings', icon: CogIcon },
 ]
