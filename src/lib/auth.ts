@@ -15,11 +15,22 @@ export const adminEmails = [
 
 export async function signInAdmin(email: string, password: string) {
   try {
+    console.log('Mock auth: Attempting login for', email)
+    
     // For demo purposes, we'll use a simple check
     // In production, implement proper admin authentication
     if (!adminEmails.includes(email)) {
+      console.log('Mock auth: Email not in admin list')
       throw new Error('Unauthorized admin email')
     }
+
+    // Simple password validation for demo
+    if (!password || password.length < 3) {
+      console.log('Mock auth: Password too short')
+      throw new Error('Password is required')
+    }
+
+    console.log('Mock auth: Login successful')
 
     // Mock admin user - replace with actual authentication
     const adminUser: AdminUser = {
@@ -33,10 +44,12 @@ export async function signInAdmin(email: string, password: string) {
     // Store in localStorage for demo
     if (typeof window !== 'undefined') {
       localStorage.setItem('admin_user', JSON.stringify(adminUser))
+      console.log('Mock auth: User stored in localStorage')
     }
 
     return { data: { user: adminUser }, error: null }
   } catch (error) {
+    console.log('Mock auth: Login failed', error)
     return { data: { user: null }, error }
   }
 }
