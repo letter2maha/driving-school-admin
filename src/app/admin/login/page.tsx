@@ -16,6 +16,11 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
 
+    // Clear any existing auth state
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('admin_user')
+    }
+
     try {
       // Use mock authentication system
       const { data, error: authError } = await signInAdmin(email, password)

@@ -25,8 +25,12 @@ export async function signInAdmin(email: string, password: string) {
 
     // Simple password validation for demo - use a specific password
     const expectedPassword = 'admin123'
+    console.log('Mock auth: Password received:', JSON.stringify(password))
+    console.log('Mock auth: Password length:', password?.length)
+    console.log('Mock auth: Expected password:', JSON.stringify(expectedPassword))
+    
     if (!password || password !== expectedPassword) {
-      console.log('Mock auth: Invalid password')
+      console.log('Mock auth: Invalid password - comparison failed')
       throw new Error('Invalid password')
     }
 
