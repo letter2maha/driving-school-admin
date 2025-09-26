@@ -100,7 +100,9 @@ export default function InstructorsPage() {
         <ClockIcon className="h-5 w-5 text-yellow-500" />
       )
     } else {
-      return student.status === 'accepted' ? (
+      // For enrolled students, both 'accepted' and 'active' status mean they are enrolled
+      const isEnrolled = student.status === 'accepted' || student.status === 'active'
+      return isEnrolled ? (
         <CheckCircleIcon className="h-5 w-5 text-green-500" />
       ) : (
         <ClockIcon className="h-5 w-5 text-yellow-500" />
@@ -119,11 +121,13 @@ export default function InstructorsPage() {
         </span>
       )
     } else {
+      // For enrolled students, both 'accepted' and 'active' status mean they are enrolled
+      const isEnrolled = student.status === 'accepted' || student.status === 'active'
       return (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-          student.status === 'accepted' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+          isEnrolled ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
         }`}>
-          {student.status === 'accepted' ? 'Enrolled' : 'Pending'}
+          {isEnrolled ? 'Enrolled' : 'Pending'}
         </span>
       )
     }
