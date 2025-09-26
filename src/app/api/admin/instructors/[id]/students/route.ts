@@ -54,6 +54,7 @@ export async function GET(
       .from('student_invitations')
       .select('*')
       .eq('instructor_id', instructorId)
+      .eq('status', 'pending') // Only pending invitations
       .gt('expires_at', new Date().toISOString()) // Only non-expired invitations
       .order('created_at', { ascending: false })
 
@@ -61,7 +62,7 @@ export async function GET(
       console.error('Error fetching invited students:', invitedError)
     }
 
-    // Get enrolled students (active)
+    // Get enrolled students (active) - Expo app creates relationships with status = 'accepted'
     const { data: enrolledStudents, error: enrolledError } = await supabaseAdmin
       .from('student_instructor_relationships')
       .select(`
@@ -71,11 +72,12 @@ export async function GET(
           full_name,
           phone,
           email,
-          created_at
+          created_at,
+          profile_image_url
         )
       `)
       .eq('instructor_id', instructorId)
-      .in('status', ['accepted', 'pending'])
+      .in('status', ['accepted', 'active']) // Expo app creates relationships with status = 'accepted' or 'active'
       .order('created_at', { ascending: false })
 
     if (enrolledError) {
